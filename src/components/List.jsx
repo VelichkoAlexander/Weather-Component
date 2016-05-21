@@ -1,17 +1,27 @@
-var React = require('react');
-var ListItem = require('./ListItem.jsx');
+var React = require('react'),
+	ListItem = require('./ListItem.jsx'),
+	HTTP = require('../services/httpService');
 
-var  ingredients = [{"id":1,"text":'ham'}, {"id":2,"text":"cheese"},{"id":3,"text":"potatoes"}];
 
 var List = React.createClass({
+	getInitialState: function () {
+		return {ingredients: []}
+	},
+	componentWillMount: function () {
+		HTTP.get('Mariupol')
+			.then(function (data) {
+				console.log(data.list);
+				this.setState({ingredients: data.list});
+			}.bind(this));
+	},
 
 	render: function () {
 
-		var listItems = ingredients.map(function (item) {
+		var listItems = this.state.ingredients.map(function (item) {
 
-			return <ListItem key={item.id} ingredient = {item.text} />
+			return <ListItem key={item.dt} date={item.dt} icon={item.weather[0].icon} deg={item.deg} />
 
-				});
+		});
 		return <ul>{listItems}</ul>;
 	}
 });

@@ -2,14 +2,27 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>CommonJS Raact Skeleton</title>
+	<title>Weather App</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-material-design.min.css">
+	<link rel="stylesheet" href="css/ripples.css">
 </head>
 <body>
-
-	<div id="ingredients">
+	<div class="container">
+		<div id="input"></div>
+		<div id="main"></div>
+		<div id="forecast"></div>
 	</div>
 
+<!--Scripts-->
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/material.min.js"></script>
+	<script src="js/ripples.min.js"></script>
 	<script src="js/main.js"></script>
-
+	<script>
+		$.material.init();
+	</script>
+<!--End Scripts-->
 </body>
 </html>
