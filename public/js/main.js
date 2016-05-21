@@ -19927,6 +19927,113 @@ module.exports = require('./lib/React');
 },{}],169:[function(require,module,exports){
 var React = require('react');
 
+var DayItem = React.createClass({
+	displayName: "DayItem",
+
+	render: function () {
+		return React.createElement(
+			"div",
+			{ className: "DayItem" },
+			React.createElement(
+				"div",
+				{ className: "row" },
+				React.createElement(
+					"div",
+					{ className: "col-xs-4 text-left" },
+					React.createElement(
+						"h5",
+						null,
+						this.props.city,
+						",",
+						this.props.country
+					),
+					React.createElement(
+						"h5",
+						null,
+						this.props.time,
+						" "
+					)
+				),
+				React.createElement(
+					"div",
+					{ className: "col-xs-4 text-center" },
+					React.createElement(
+						"h5",
+						null,
+						" ",
+						this.props.description,
+						" "
+					)
+				),
+				React.createElement(
+					"div",
+					{ className: "col-xs-4 text-right" },
+					React.createElement(
+						"div",
+						{ className: "togglebutton" },
+						React.createElement(
+							"label",
+							null,
+							React.createElement(
+								"span",
+								null,
+								"°C"
+							),
+							React.createElement("input", { type: "checkbox" }),
+							React.createElement(
+								"span",
+								null,
+								"°F"
+							)
+						)
+					)
+				)
+			),
+			React.createElement(
+				"div",
+				{ className: "row" },
+				React.createElement(
+					"div",
+					{ className: "col-xs-12 text-center" },
+					React.createElement("img", { src: "http://openweathermap.org/img/w/" + this.props.icon + ".png" }),
+					React.createElement(
+						"h2",
+						null,
+						this.props.temp,
+						" C"
+					),
+					React.createElement(
+						"h5",
+						null,
+						"Feels like 19 °C"
+					)
+				)
+			),
+			React.createElement(
+				"div",
+				{ className: "row" },
+				React.createElement(
+					"div",
+					{ className: "col-xs-6 text-center" },
+					"East"
+				),
+				React.createElement(
+					"div",
+					{ className: "col-xs-6 text-center" },
+					this.props.windSpeed,
+					" m/s"
+				)
+			)
+		);
+	}
+
+});
+
+module.exports = DayItem;
+
+},{"react":167}],170:[function(require,module,exports){
+var React = require('react');
+
 var InputItem = React.createClass({
   displayName: "InputItem",
 
@@ -19964,7 +20071,7 @@ var InputItem = React.createClass({
 
 module.exports = InputItem;
 
-},{"react":167}],170:[function(require,module,exports){
+},{"react":167}],171:[function(require,module,exports){
 var React = require('react'),
     ListItem = require('./ListItem.jsx'),
     HTTP = require('../services/httpService');
@@ -20013,7 +20120,7 @@ var evalDate = function (unix_timestamp) {
 
 module.exports = List;
 
-},{"../services/httpService":174,"./ListItem.jsx":171,"react":167}],171:[function(require,module,exports){
+},{"../services/httpService":175,"./ListItem.jsx":172,"react":167}],172:[function(require,module,exports){
 var React = require('react');
 var ListItem = React.createClass({
 	displayName: "ListItem",
@@ -20048,10 +20155,11 @@ var ListItem = React.createClass({
 
 module.exports = ListItem;
 
-},{"react":167}],172:[function(require,module,exports){
+},{"react":167}],173:[function(require,module,exports){
 var React = require('react');
 HTTP = require('../services/httpService');
 var InputItem = require('./InputItem.jsx');
+var DayItem = require('./DayItem.jsx');
 var List = require('./List.jsx');
 
 var MainScreen = React.createClass({
@@ -20074,93 +20182,15 @@ var MainScreen = React.createClass({
 				'div',
 				{ className: 'mainScreen' },
 				React.createElement(InputItem, null),
-				React.createElement(
-					'div',
-					{ className: 'row' },
-					React.createElement(
-						'div',
-						{ className: 'col-xs-4 text-left' },
-						React.createElement(
-							'h5',
-							null,
-							this.state.weather.city.name,
-							',',
-							this.state.weather.city.country
-						),
-						React.createElement(
-							'h5',
-							null,
-							' 00:00 '
-						)
-					),
-					React.createElement(
-						'div',
-						{ className: 'col-xs-4 text-center' },
-						React.createElement(
-							'h5',
-							null,
-							' ',
-							this.state.weather.list[0].weather[0].description,
-							' '
-						)
-					),
-					React.createElement(
-						'div',
-						{ className: 'col-xs-4 text-right' },
-						React.createElement(
-							'div',
-							{ className: 'togglebutton' },
-							React.createElement(
-								'label',
-								null,
-								React.createElement(
-									'span',
-									null,
-									'°C'
-								),
-								React.createElement('input', { type: 'checkbox' }),
-								React.createElement(
-									'span',
-									null,
-									'°F'
-								)
-							)
-						)
-					)
-				),
-				React.createElement(
-					'div',
-					{ className: 'row' },
-					React.createElement(
-						'div',
-						{ className: 'col-xs-12 text-center' },
-						React.createElement('img', { src: 'http://openweathermap.org/img/w/01d.png' }),
-						React.createElement(
-							'h2',
-							null,
-							'-3 C'
-						),
-						React.createElement(
-							'h5',
-							null,
-							'Feels like 19 °C'
-						)
-					)
-				),
-				React.createElement(
-					'div',
-					{ className: 'row' },
-					React.createElement(
-						'div',
-						{ className: 'col-xs-6 text-center' },
-						'East'
-					),
-					React.createElement(
-						'div',
-						{ className: 'col-xs-6 text-center' },
-						'12m/s'
-					)
-				),
+				React.createElement(DayItem, {
+					city: this.state.weather.city.name,
+					country: this.state.weather.city.country,
+					time: this.state.weather.list[0].dt_txt.substring(11, 16),
+					temp: this.state.weather.list[0].main.temp,
+					description: this.state.weather.list[0].weather[0].description,
+					icon: this.state.weather.list[0].weather[0].icon,
+					windSpeed: this.state.weather.list[0].wind.speed
+				}),
 				React.createElement(List, { arr: this.state.weather.list })
 			);
 		} else {
@@ -20175,7 +20205,7 @@ var MainScreen = React.createClass({
 
 module.exports = MainScreen;
 
-},{"../services/httpService":174,"./InputItem.jsx":169,"./List.jsx":170,"react":167}],173:[function(require,module,exports){
+},{"../services/httpService":175,"./DayItem.jsx":169,"./InputItem.jsx":170,"./List.jsx":171,"react":167}],174:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var MainScreen = require('./components/MainScreen.jsx');
@@ -20183,7 +20213,7 @@ var List = require('./components/List.jsx');
 
 ReactDOM.render(React.createElement(MainScreen, null), document.getElementById('main'));
 
-},{"./components/List.jsx":170,"./components/MainScreen.jsx":172,"react":167,"react-dom":29}],174:[function(require,module,exports){
+},{"./components/List.jsx":171,"./components/MainScreen.jsx":173,"react":167,"react-dom":29}],175:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
 
 var baseUrl = 'http://api.openweathermap.org/data/2.5/forecast/days'; // basse url for service
@@ -20200,4 +20230,4 @@ var service = {
 
 module.exports = service;
 
-},{"whatwg-fetch":168}]},{},[173]);
+},{"whatwg-fetch":168}]},{},[174]);
