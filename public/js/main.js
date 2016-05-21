@@ -20035,36 +20035,42 @@ module.exports = DayItem;
 var React = require('react');
 
 var InputItem = React.createClass({
-  displayName: "InputItem",
+  displayName: 'InputItem',
 
+  getInitialState: function () {
+    return { value: '' };
+  },
+  handelChange: function (event) {
+    this.setState({ value: event.target.value });
+  },
   render: function () {
     return React.createElement(
-      "div",
-      { className: "form-group label-floating is-empty" },
+      'div',
+      { className: 'form-group label-floating is-empty' },
       React.createElement(
-        "div",
-        { className: "input-group " },
+        'div',
+        { className: 'input-group ' },
         React.createElement(
-          "label",
-          { className: "control-label", "for": "addon3a" },
-          "Search..."
+          'label',
+          { className: 'control-label', 'for': 'addon3a' },
+          'Search...'
         ),
-        React.createElement("input", { type: "text", id: "addon3a", className: "form-control" }),
+        React.createElement('input', { type: 'text', id: 'addon', className: 'form-control', onChange: this.handelChange, value: this.state.value }),
         React.createElement(
-          "span",
-          { className: "input-group-btn" },
+          'span',
+          { className: 'input-group-btn' },
           React.createElement(
-            "button",
-            { type: "button", className: "btn btn-fab btn-fab-mini" },
+            'button',
+            { type: 'button', className: 'btn btn-fab btn-fab-mini' },
             React.createElement(
-              "i",
-              { className: "material-icons" },
-              ">"
+              'i',
+              { className: 'material-icons' },
+              '>'
             )
           )
         )
       ),
-      React.createElement("span", { className: "material-input" })
+      React.createElement('span', { className: 'material-input' })
     );
   }
 });
