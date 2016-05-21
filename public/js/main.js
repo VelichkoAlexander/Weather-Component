@@ -19972,26 +19972,20 @@ var React = require('react'),
 var List = React.createClass({
 	displayName: 'List',
 
-	getInitialState: function () {
-		return { ingredients: [] };
-	},
-	componentWillMount: function () {
-		HTTP.get('Mariupol').then(function (data) {
-			console.log(data.list);
-			this.setState({ ingredients: data.list });
-		}.bind(this));
-	},
-
 	render: function () {
 		var styleUl = {
 			listStyle: "none",
-			padding: 0,
-			margin: 0
+			margin: 0,
+			padding: 0
 		};
-		var listItems = this.state.ingredients.map(function (item) {
-			if (item.dt_txt.substring(11, 13) == "15") {
 
-				return React.createElement(ListItem, { key: item.dt, date: item.dt_txt, icon: item.weather[0].icon, deg: item.main.temp });
+		var listItems = this.props.arr.map(function (item, key) {
+			if (item.dt_txt.substring(11, 13) === "15") {
+				return React.createElement(ListItem, { key: key,
+					date: evalDate(item.dt),
+					icon: item.weather[0].icon,
+					deg: item.main.temp
+				});
 			}
 		});
 		return React.createElement(
@@ -20001,6 +19995,21 @@ var List = React.createClass({
 		);
 	}
 });
+
+var evalDate = function (unix_timestamp) {
+	var d = new Date(unix_timestamp * 1000);
+	var weekday = new Array(7);
+	weekday[0] = "Sunday";
+	weekday[1] = "Monday";
+	weekday[2] = "Tuesday";
+	weekday[3] = "Wednesday";
+	weekday[4] = "Thursday";
+	weekday[5] = "Friday";
+	weekday[6] = "Saturday";
+
+	var n = weekday[d.getDay()];
+	return n;
+};
 
 module.exports = List;
 
@@ -20012,10 +20021,10 @@ var ListItem = React.createClass({
 	render: function () {
 		return React.createElement(
 			"li",
-			null,
+			{ className: "col-xs-12" },
 			React.createElement(
 				"div",
-				{ className: "well well-sm col-xs-12" },
+				{ className: "well well-sm row ", style: { lineHeight: "50px" } },
 				React.createElement(
 					"div",
 					{ className: "col-xs-4 text-left" },
@@ -20029,7 +20038,8 @@ var ListItem = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "col-xs-4 text-right" },
-					this.props.deg
+					this.props.deg,
+					" C"
 				)
 			)
 		);
@@ -20042,128 +20052,141 @@ module.exports = ListItem;
 var React = require('react');
 HTTP = require('../services/httpService');
 var InputItem = require('./InputItem.jsx');
+var List = require('./List.jsx');
 
 var MainScreen = React.createClass({
-  displayName: 'MainScreen',
+	displayName: 'MainScreen',
 
-  getInitialState: function () {
-    return { data: [] };
-  },
-  componentWillMount: function () {
-    HTTP.get('Mariupol').then(function (data) {
-      console.log(data);
-      this.setState({ wather: data });
-    }.bind(this));
-  },
-  render: function () {
-    console.log(this.state.wather.cod);
-    return React.createElement(
-      'div',
-      { className: 'mainScren' },
-      React.createElement(InputItem, null),
-      React.createElement(
-        'div',
-        { className: 'row' },
-        React.createElement(
-          'div',
-          { className: 'col-xs-4 text-left' },
-          React.createElement(
-            'h5',
-            null,
-            ' '
-          ),
-          React.createElement(
-            'h5',
-            null,
-            ' 00:00 '
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'col-xs-4 text-center' },
-          React.createElement(
-            'h5',
-            null,
-            ' overcast clouds '
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'col-xs-4 text-right' },
-          React.createElement(
-            'div',
-            { className: 'togglebutton' },
-            React.createElement(
-              'label',
-              null,
-              React.createElement(
-                'span',
-                null,
-                '°C'
-              ),
-              React.createElement('input', { type: 'checkbox' }),
-              React.createElement(
-                'span',
-                null,
-                '°F'
-              )
-            )
-          )
-        )
-      ),
-      React.createElement(
-        'div',
-        { className: 'row' },
-        React.createElement(
-          'div',
-          { className: 'col-xs-12 text-center' },
-          React.createElement('img', { src: 'http://openweathermap.org/img/w/01d.png' }),
-          React.createElement(
-            'h2',
-            null,
-            '-3 C'
-          ),
-          React.createElement(
-            'h5',
-            null,
-            'Feels like 19 °C'
-          )
-        )
-      ),
-      React.createElement(
-        'div',
-        { className: 'row' },
-        React.createElement(
-          'div',
-          { className: 'col-xs-6 text-center' },
-          'East'
-        ),
-        React.createElement(
-          'div',
-          { className: 'col-xs-6 text-center' },
-          '12m/s'
-        )
-      )
-    );
-  }
+	getInitialState: function () {
+		return { weather: null };
+	},
+	componentWillMount: function () {
+		HTTP.get('Mariupol').then(function (data) {
+			console.log(data);
+			this.setState({ weather: data });
+		}.bind(this));
+	},
+
+	render: function () {
+
+		if (this.state.weather) {
+			return React.createElement(
+				'div',
+				{ className: 'mainScreen' },
+				React.createElement(InputItem, null),
+				React.createElement(
+					'div',
+					{ className: 'row' },
+					React.createElement(
+						'div',
+						{ className: 'col-xs-4 text-left' },
+						React.createElement(
+							'h5',
+							null,
+							this.state.weather.city.name,
+							',',
+							this.state.weather.city.country
+						),
+						React.createElement(
+							'h5',
+							null,
+							' 00:00 '
+						)
+					),
+					React.createElement(
+						'div',
+						{ className: 'col-xs-4 text-center' },
+						React.createElement(
+							'h5',
+							null,
+							' ',
+							this.state.weather.list[0].weather[0].description,
+							' '
+						)
+					),
+					React.createElement(
+						'div',
+						{ className: 'col-xs-4 text-right' },
+						React.createElement(
+							'div',
+							{ className: 'togglebutton' },
+							React.createElement(
+								'label',
+								null,
+								React.createElement(
+									'span',
+									null,
+									'°C'
+								),
+								React.createElement('input', { type: 'checkbox' }),
+								React.createElement(
+									'span',
+									null,
+									'°F'
+								)
+							)
+						)
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'row' },
+					React.createElement(
+						'div',
+						{ className: 'col-xs-12 text-center' },
+						React.createElement('img', { src: 'http://openweathermap.org/img/w/01d.png' }),
+						React.createElement(
+							'h2',
+							null,
+							'-3 C'
+						),
+						React.createElement(
+							'h5',
+							null,
+							'Feels like 19 °C'
+						)
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'row' },
+					React.createElement(
+						'div',
+						{ className: 'col-xs-6 text-center' },
+						'East'
+					),
+					React.createElement(
+						'div',
+						{ className: 'col-xs-6 text-center' },
+						'12m/s'
+					)
+				),
+				React.createElement(List, { arr: this.state.weather.list })
+			);
+		} else {
+			return React.createElement(
+				'div',
+				null,
+				'Sorry, something wrong'
+			);
+		}
+	}
 });
 
 module.exports = MainScreen;
 
-},{"../services/httpService":174,"./InputItem.jsx":169,"react":167}],173:[function(require,module,exports){
+},{"../services/httpService":174,"./InputItem.jsx":169,"./List.jsx":170,"react":167}],173:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
-
-var InputItem = require('./components/InputItem.jsx');
 var MainScreen = require('./components/MainScreen.jsx');
 var List = require('./components/List.jsx');
 
 ReactDOM.render(React.createElement(MainScreen, null), document.getElementById('main'));
 
-},{"./components/InputItem.jsx":169,"./components/List.jsx":170,"./components/MainScreen.jsx":172,"react":167,"react-dom":29}],174:[function(require,module,exports){
+},{"./components/List.jsx":170,"./components/MainScreen.jsx":172,"react":167,"react-dom":29}],174:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
 
-var baseUrl = 'http://api.openweathermap.org/data/2.5/forecast'; // basse url for service
+var baseUrl = 'http://api.openweathermap.org/data/2.5/forecast/days'; // basse url for service
 var key = '6e90c90aa4f4fe14aed1a4d43421a79c'; //api free key
 
 var service = {
