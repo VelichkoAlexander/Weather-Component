@@ -9,11 +9,16 @@ You are going to build a Weather component:
 * That allows the developer to pass in the location they want the weather for
 * Use Fetch to interact with the API (or your favorite HTTP library)
 
-###I use
+###I use:
 
 * [React](https://facebook.github.io/react/)
 * [bootstrap-material-design](http://fezvrasta.github.io/bootstrap-material-design/)
 * [window.fetch polyfill](https://github.com/github/fetch)
+
+###Demo:
+
+[In progress](http://alexander-velichko.com/portfolioWorks/weatherApp/)
+
 
 ###Installation:
 
