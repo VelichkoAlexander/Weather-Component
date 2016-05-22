@@ -18,13 +18,13 @@ var InputItem = React.createClass({
 
 
               <span className="input-group-btn">
-                <button type="button" className="btn btn-fab btn-fab-mini">
+                <button type="button" className="btn btn-fab btn-fab-mini" onClick={this.props.onClick}>
                   <i className="material-icons">></i>
                 </button>
               </span>
             </div>
 
-          <span className="material-input"></span></div>
+          <span className="material-input"> </span></div>
     )
   }
 });

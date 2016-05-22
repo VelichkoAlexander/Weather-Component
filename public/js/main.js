@@ -19982,6 +19982,11 @@ var DayItem = React.createClass({
 							React.createElement("input", { type: "checkbox" }),
 							React.createElement(
 								"span",
+								{ className: "toggle" },
+								" "
+							),
+							React.createElement(
+								"span",
 								null,
 								"°F"
 							)
@@ -20061,7 +20066,7 @@ var InputItem = React.createClass({
           { className: 'input-group-btn' },
           React.createElement(
             'button',
-            { type: 'button', className: 'btn btn-fab btn-fab-mini' },
+            { type: 'button', className: 'btn btn-fab btn-fab-mini', onClick: this.props.onClick },
             React.createElement(
               'i',
               { className: 'material-icons' },
@@ -20070,7 +20075,11 @@ var InputItem = React.createClass({
           )
         )
       ),
-      React.createElement('span', { className: 'material-input' })
+      React.createElement(
+        'span',
+        { className: 'material-input' },
+        ' '
+      )
     );
   }
 });
@@ -20174,11 +20183,16 @@ var MainScreen = React.createClass({
 	getInitialState: function () {
 		return { weather: null };
 	},
-	componentWillMount: function () {
-		HTTP.get('Mariupol').then(function (data) {
+	componentWillMount: function (url) {
+		HTTP.get(url).then(function (data) {
 			console.log(data);
 			this.setState({ weather: data });
 		}.bind(this));
+	},
+	onSend: function () {
+		var url = this.refs.input.state.value;
+		console.log(url);
+		componentWillMount(url);
 	},
 
 	render: function () {
@@ -20187,7 +20201,62 @@ var MainScreen = React.createClass({
 			return React.createElement(
 				'div',
 				{ className: 'mainScreen' },
-				React.createElement(InputItem, null),
+				React.createElement(InputItem, { ref: 'input', onClick: this.onSend }),
+				React.createElement(DayItem, {
+					city: this.state.weather.city.name,
+					country: this.state.weather.city.country,
+					time: this.state.weather.list[0].dt_txt.substring(11, 16),
+					temp: this.state.weather.list[0].main.temp,
+					description: this.state.weather.list[0].weather[0].description,
+					icon: this.state.weather.list[0].weather[0].icon,
+					windSpeed: this.state.weather.list[0].wind.speed
+				}),
+				React.createElement(List, { arr: this.state.weather.list })
+			);
+		} else {
+			return React.createElement(
+				'div',
+				null,
+				'Sorry, something wrong'
+			);
+		}
+	}
+});
+
+module.exports = MainScreen;
+
+var React = require('react');
+HTTP = require('../services/httpService');
+var InputItem = require('./InputItem.jsx');
+var DayItem = require('./DayItem.jsx');
+var List = require('./List.jsx');
+
+var MainScreen = React.createClass({
+	displayName: 'MainScreen',
+
+	getInitialState: function () {
+		return { weather: null };
+	},
+	componentWillMount: function (url) {
+		if (!arguments.length) {
+			url = "Mariupol";
+		}
+		HTTP.get(url).then(function (data) {
+			console.log(data);
+			this.setState({ weather: data });
+		}.bind(this));
+	},
+	onSend: function () {
+		var url = this.refs.input.state.value;
+		this.componentWillMount(url);
+	},
+	render: function () {
+
+		if (this.state.weather) {
+			return React.createElement(
+				'div',
+				{ className: 'mainScreen' },
+				React.createElement(InputItem, { ref: 'input', onClick: this.onSend }),
 				React.createElement(DayItem, {
 					city: this.state.weather.city.name,
 					country: this.state.weather.city.country,
@@ -20216,6 +20285,8 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var MainScreen = require('./components/MainScreen.jsx');
 var List = require('./components/List.jsx');
+
+$.material.init();
 
 ReactDOM.render(React.createElement(MainScreen, null), document.getElementById('main'));
 
